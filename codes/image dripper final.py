@@ -19,7 +19,7 @@ image2 = image2.crop((0, int(H * 0.2), L, int(H * 1.2) - int(H * 0.2)))      #"R
 
 
 L, H = image2.size                      # Récupération de la longueur et de la hauteur de l'image2 qui vient d'être créée dans les variables L et H
-image3 = Image.new("RGB",(int(L * 1.2),H))   # Création d'une nouvelle troisième image vierge 1,2 fois plus haute et de même hauteur que l'image d'origine
+image3 = Image.new("RGB",(int(L * 1.2),H))   # Création d'une nouvelle troisième image vierge 1,2 fois plus large et de même hauteur que l'image d'origine
 
 for y in range(H):                                  # Itération pour chaque ligne
     N = random.randint(int(-0.1 * L), int(0.1 * L)) # Création d'un nombre aléatoire dans la variable N (correspond au décalage de la ligne)
