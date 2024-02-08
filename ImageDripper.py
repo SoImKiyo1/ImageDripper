@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import filedialog, Label, LabelFrame
+from tkinter import filedialog, Label, LabelFrame, PhotoImage
 from PIL import Image, ImageTk
 
 # Fonction pour la logique d'upload
@@ -11,7 +11,7 @@ def upload_file():
         img=img.resize((100,100))
         img=ImageTk.PhotoImage(img)
         e1 =tk.Label(fen)
-        e1.grid(row=10, column=10)
+        e1.grid(row=3, column=10)
         e1.image = img
         e1['image']=img
 
@@ -19,16 +19,31 @@ def upload_file():
 fen = tk.Tk()
 fen.geometry("1200x700")
 fen.title('ImageDripper')
-fen.configure(bg="#333333", padx=10, pady=10)
 
-my_font1=('times', 18, 'bold')
+fond = '#000814'
+boutton = '#003566'
+bouttonactif = '#01447a'
+texte = 'WHITE'
 
-# Label (Titre Upload)
-l1 = tk.Label(fen, text='Upload Files & display', width=30, font=my_font1)
-l1.grid(row=10, column=1)
+
+fen.configure(bg=fond, padx=10, pady=10)
+
+fontperso=('Roboto', 10, 'bold')
 
 # Button (Upload)
-b1 = tk.Button(fen, text='Upload Files', width=20, command=upload_file)
-b1.grid(row=2, column=0)
+
+def on_enter(e):
+    bimport.config(image=rimport_hover)
+
+def on_leave(e):
+    bimport.config(image=rimport)
+
+rimport = tk.PhotoImage(file='button_importer.png')
+rimport_hover = tk.PhotoImage(file='importer2.png')
+
+bimport = tk.Button(fen,image=rimport,border=0,relief=tk.SUNKEN,command=upload_file)
+bimport.bind("<Enter>", on_enter)
+bimport.bind("<Leave>", on_leave)
+bimport.place(x=60, y=60)
 
 fen.mainloop()
