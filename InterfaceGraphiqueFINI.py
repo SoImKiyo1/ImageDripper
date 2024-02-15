@@ -4,6 +4,33 @@ from tkinter import filedialog, ttk
 from PIL import Image, ImageTk
 import random
 
+# Definition des parametres de la fenetre
+fen = tk.Tk()
+fen.geometry("1200x700")
+fen.title("ImageDripper")
+fen.resizable(False,False)
+
+fond = "#ECF3FC"
+fond2 = "#45536B"
+boutton = "#9CB8E0"
+bouttonsurvol = "#afcaf0"
+fontperso=("Roboto", 20, "bold")
+
+fen.configure(background=fond, padx=10, pady=10)
+
+#Canvas pour le fond de l'image
+
+imageback = Canvas(fen, width=1000, height=500, background=boutton, highlightthickness=0)
+imageback.pack()
+imageback.place(x=150, y=60)
+
+#Canvas pour le fond des bouttons
+
+buttonback = Canvas(fen, width=400, height=500, background=fond2, highlightthickness=0)
+buttonback.pack()
+buttonback.place(x=750, y=60)
+
+
 chemin = 1
 def selectionchemin(value):
     global chemin
@@ -95,6 +122,23 @@ horizontal2 = None
 vertical2 = None
 verthoriz3 = None
 
+force = 0
+def mise_a_jour_force(event):
+    global force
+    force = (scale.get() * 0.4) / 100
+    print("Nouvelle valeur du curseur :", scale.get())
+    print("Force calculée :", force)
+
+# Slider Force
+texte_force = tk.Label(fen, text="Force:",background=fond2, foreground=fond, font=fontperso, border=0)
+texte_force.place(x=840, y=280)
+
+style = ttk.Style()
+style.configure('Custom.Horizontal.TScale', background=fond2, foreground=fond, troughcolor=fond)
+
+scale = ttk.Scale(fen, from_=0, to=100, orient='horizontal', length=200, style='Custom.Horizontal.TScale', command=mise_a_jour_force)
+scale.place(x=840, y=330)
+
 def effetsimage():
     if variable == 2:
         if preset1_image is not None and chemin == 1 :
@@ -107,16 +151,15 @@ def effetsimage():
             horizontal1 = imageimporter
         L, H = horizontal1.size                      # Récupération de la longueur et de la hauteur de l'image d'origine dans les variables L et H
         global horizontal2
-        horizontal2 = Image.new("RGB",(int(L * 1.2),H))   # Création d'une nouvelle image vierge 1,2 fois plus large et de même hauteur que l'image d'origine
-
+        horizontal2 = Image.new("RGB",(int(L * (1+2*force)),H))  # Création d'une nouvelle image vierge 1,2 fois plus large et de même hauteur que l'image d'origine
         for y in range(H):                                  # Itération pour chaque ligne
-            N = random.randint(int(-0.1 * L), int(0.1 * L)) # Création d'un nombre aléatoire dans la variable N (correspond au décalage de la colonne)
+            N = random.randint(int(-force * L), int(force * L)) # Création d'un nombre aléatoire dans la variable N (correspond au décalage de la colonne)
             for x in range(L):                              # Itération pour chaque pixel de la ligne
                 pixel = horizontal1.getpixel((x,y))    #Récupération du pixel de coordonées x,y
                 r = pixel[0]        #Récupération de la composante rouge du pixel (RVB) dans la variable r
                 v = pixel[1]        #Récupération de la composante verte du pixel (RVB) dans la variable v
                 b = pixel[2]        #Récupération de la composante bleue du pixel (RVB) dans la variable b
-                horizontal2.putpixel(((x + int(0.1 * L) + N), y),(r,v,b))   #Placement du pixel sur la nouvelle image en tenant compte des marges latérales et du décalage (N)
+                horizontal2.putpixel(((x + int(force * L) + N), y),(r,v,b))   #Placement du pixel sur la nouvelle image en tenant compte des marges latérales et du décalage (N)
 
         horizontal2 = horizontal2.crop((int(L * 0.2), 0, int(L * 1.2) - int(L * 0.2), H ))      #"Rognage" des marges latérales de l'image
         horizontal31 = horizontal2.resize((600,500))
@@ -200,7 +243,6 @@ def effetsimage():
         label_verthoriz.place(x=150, y=60)  # Placement du label dans la fenêtre
         label_verthoriz.image = verthoriz41  # Garde une référence de l'image pour éviter qu'elle ne soit supprimée par python
 
-
 # Fonction pour la logique d'upload
 def sauvegarderimage():
     # Vérification si une image est présente
@@ -234,31 +276,6 @@ def sauvegarderimage():
     if verthoriz3 is not None and chemin == 4 :
         verthoriz3.save("ImageVertHoriz.png")
 
-# Definition des parametres de la fenetre
-fen = tk.Tk()
-fen.geometry("1200x700")
-fen.title("ImageDripper")
-fen.resizable(False,False)
-
-fond = "#ECF3FC"
-fond2 = "#45536B"
-boutton = "#9CB8E0"
-bouttonsurvol = "#afcaf0"
-fontperso=("Roboto", 20, "bold")
-
-fen.configure(background=fond, padx=10, pady=10)
-
-#Canvas pour le fond de l'image
-
-imageback = Canvas(fen, width=1000, height=500, background=boutton, highlightthickness=0)
-imageback.pack()
-imageback.place(x=150, y=60)
-
-#Canvas pour le fond des bouttons
-
-buttonback = Canvas(fen, width=400, height=500, background=fond2, highlightthickness=0)
-buttonback.pack()
-buttonback.place(x=750, y=60)
 
 # Effets au survol pour Boutton
 
@@ -308,16 +325,6 @@ btnverthoriz = tk.Button(fen, text="\u2192", background=boutton, foreground=fond
 btnverthoriz.place(x=985, y=150)
 btnverthoriz.bind("<Enter>", on_enter)
 btnverthoriz.bind("<Leave>", on_leave)
-
-# Slider Force
-texte_force = tk.Label(fen, text="Force:",background=fond2, foreground=fond, font=fontperso, border=0)
-texte_force.place(x=840, y=280)
-
-style = ttk.Style()
-style.configure('Custom.Horizontal.TScale', background=fond2, foreground=fond, troughcolor=fond)
-
-scale = ttk.Scale(fen, from_=0, to=100, orient='horizontal', length=200, style='Custom.Horizontal.TScale')
-scale.place(x=840, y=330)
 
 # Boutton Preset
 
